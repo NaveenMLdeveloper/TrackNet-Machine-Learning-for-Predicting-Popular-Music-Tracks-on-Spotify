@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Popularity Predictor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        form {
+            display: inline-block;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            max-width: 1200px;
+            margin: auto;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            column-gap: 40px; /* Increased space between columns */
+            row-gap: 10px; /* Reduced space between rows */
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px; /* Reduced space between input fields */
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        button {
+            background: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        button:hover {
+            background: #218838;
+        }
+        #result {
+            margin-top: 30px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h2>Spotify Popularity Predictor</h2>
+    <form id="prediction-form">
+        <div class="form-grid">
+            {% for feature in feature_names %}
+                <div>
+                    <label for="{{ feature }}">{{ feature }}</label>
+                    <input type="number" step="any" name="{{ feature }}" required>
+                </div>
+            {% endfor %}
+        </div>
+        <button type="submit">Predict</button>
+    </form>
+    <div id="result"></div>
+    <script>
+        document.getElementById("prediction-form").onsubmit = async function(event) {
+            event.preventDefault();
+            let formData = new FormData(this);
+            let response = await fetch("/predict", { method: "POST", body: formData });
+            let data = await response.json();
+            document.getElementById("result").innerText = data.prediction || "Error: " + data.error;
+        };
+    </script>
+</body>
+</html>
